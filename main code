@@ -73,10 +73,10 @@ from email.mime.multipart import MIMEMultipart
 
 smtp_ssl_host='smtp.gmail.com'
 smtp_ssl_port=int(587) #587 #465
-USERNAME='varanasiroshan31011@gmail.com'
-PASSWORD='varanasi@1234567890'
-sender='varanasiroshan31011@gmail.com'
-targets='varanasiroshan31011@gmail.com'  # for multiple use ['sss','sss']
+USERNAME='xyz@gmail.com'
+PASSWORD='xyz'
+sender='xyz@gmail.com'
+targets='xyz@gmail.com'  # for multiple use ['sss','sss']
 
 #try:
    # msg=MIMEText('hii this is the bot .total no. of attendees in ur camera or webcam is  len(face_cordinate) for attendance')
