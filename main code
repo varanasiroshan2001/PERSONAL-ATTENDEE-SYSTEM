@@ -1,0 +1,102 @@
+import cv2
+import sys
+cap=cv2.VideoCapture(0)
+while True:
+    status,photo=cap.read()
+
+    # for borders
+    
+   # photo[10:25,:]  =[0,0,255]
+   # photo[:,10:25]  =[0,255,255]
+   # photo[:,620:635]=[0,255,0]
+   # photo[450:465,:]=[255,0,0]
+    
+    
+    
+    face_model=cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+    eye_model=cv2.CascadeClassifier('haarcascade_eye.xml')
+    smile_model=cv2.CascadeClassifier('haarcascade_smile.xml')
+
+    # for multi face detection
+
+    face_cordinate=face_model.detectMultiScale(photo,1.3,5)
+    for (x,y,w,h) in face_cordinate:
+
+        if len(face_cordinate)==0:
+            pass
+        else:
+          #     x=face_cordinate[0][0]
+          #     y=face_cordinate[0][1]
+            photo=cv2.rectangle(photo,(x,y),(x+w,y+h),[255,255,255],4)
+    
+    # to put text        
+            org=(x-10,y-10)
+            font=cv2.FONT_HERSHEY_SIMPLEX
+            photo=cv2.putText(photo,'hey',org,font,1,[0,255,0],4,cv2.LINE_AA)
+       
+    # for multi eye detection
+       
+        eye_cordinate=face_model.detectMultiScale(photo)
+        for (ex,ey,ew,eh) in eye_cordinate:
+            if len(eye_cordinate)==0:
+                pass
+            else:
+          #      ex=eye_cordinate[0][0]
+          #      ey=eye_cordinate[0][1]
+                photo=cv2.rectangle(photo,(ex,ey),(ex+ew,ey+eh),[0,0,255],4)
+
+       # for smile detection
+    
+    """      smile_cordinate=face_model.detectMultiScale(photo)
+        for (sx,sy,sw,sh) in smile_cordinate:  
+            if len(smile_cordinate)==0:
+                pass
+            else:
+          #      sx=smile_cordinate[0][0]
+          #      sy=smile_cordinate[0][1]
+                photo=cv2.rectangle(photo,(sx,sy),(sx+sw,sy+sh),[0,0,0],4)
+  """
+    x='total no of attendees ='+str(len(face_cordinate))
+    photo=cv2.putText(photo,x,(20,20),cv2.FONT_HERSHEY_SIMPLEX,1,[266,0,0],4,cv2.LINE_AA)
+    cv2.imshow("HIIIIII",photo)
+    if cv2.waitKey(1)==13:
+        break
+        
+cv2.destroyAllWindows()
+cap.release()
+
+# mail the attendee system
+
+import  smtplib 
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+smtp_ssl_host='smtp.gmail.com'
+smtp_ssl_port=int(587) #587 #465
+USERNAME='varanasiroshan31011@gmail.com'
+PASSWORD='varanasi@1234567890'
+sender='varanasiroshan31011@gmail.com'
+targets='varanasiroshan31011@gmail.com'  # for multiple use ['sss','sss']
+
+#try:
+   # msg=MIMEText('hii this is the bot .total no. of attendees in ur camera or webcam is  len(face_cordinate) for attendance')
+text='hii this is the bot .total no. of attendees in ur camera or webcam is '+str(len(face_cordinate))+'attendace'
+msg=MIMEMultipart()
+msg['Subject']='PERSONAL ATTENDEE SYSTEM'
+msg['From']=sender
+msg['to']=targets   # or  ', '.join(targets)
+msg.attach(MIMEText(text))
+
+server=smtplib.SMTP(smtp_ssl_host,smtp_ssl_port)
+server.ehlo()
+server.starttls()
+server.ehlo()
+   # conn=SMTP_SSL(SMTPserver)
+   # conn.set_debuglevel(False)
+server.login(USERNAME,PASSWORD)
+    #try:
+server.sendmail(sender,targets,msg.as_string())
+    #finally:
+server.quit()
+#except:
+#   sys.exit("mail not done")
